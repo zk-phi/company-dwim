@@ -4,6 +4,11 @@
 
 Emulate `ac-dwim` behavior (of `auto-complete.el`) with `company.el`.
 
+----
+
+like `company-tng` but `company-preview-common-frontend` and
+`company-preview-frontend` are combined.
+
 ## Usage
 
 When you press `TAB` once, `company-dwim` completes the common part
