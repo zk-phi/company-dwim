@@ -10,10 +10,10 @@ Comparisons with `company-tng`:
 
 - `company-preview-*` frontends are integrated to `company-dwim-frontend`
 
-- `company-selection-default` is not disabled
+- `company-selection-default` is not disabled, so that
   - `RET` can also perform completion
   - first tooltip item looks like selected by default
-  - completion is finished when pressing `TAB` with only one candidate
+  - completion is automatically finished when pressing `TAB` with sole candidate
 
 ## Usage
 
