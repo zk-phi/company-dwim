@@ -11,11 +11,6 @@
            (not (and (symbolp this-command)
                      (string-match-p "\\`company-" (symbol-name this-command)))))))
 
-(defun company-dwim-pre-command ()
-  (when (company-dwim-should-commit-p)
-    (company-complete-selection)))
-(advice-add 'company-pre-command :before 'company-dwim-pre-command)
-
 (defun company-dwim-restore-state (&optional _)
   (setq company-dwim-half-committed nil))
 (add-hook 'company-after-completion-hook 'company-dwim-restore-state)
@@ -47,7 +42,10 @@ cursor position when NO-KEEP-CURSOR is true."
 
 (defun company-dwim-frontend (command)
   (cl-case command
-    (pre-command (company-preview-hide))
+    (pre-command
+     (company-preview-hide)
+     (when (company-dwim-should-commit-p)
+       (company-complete-selection)))
     (post-command
      (cond ((company-dwim-expand-prefix-p)
             (company-preview-show-at-point (point) company-common))
