@@ -15,6 +15,9 @@ Comparisons with `company-tng`:
   - first tooltip item looks like selected by default
   - completion is automatically finished when pressing `TAB` with sole candidate
 
+- `company-abort` (C-g) does not undo completion (use the basic `undo`
+  command to undo)
+
 ## Usage
 
 When you press `TAB` once, `company-dwim` completes the common part
