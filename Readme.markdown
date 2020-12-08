@@ -6,8 +6,12 @@ Emulate `ac-dwim` behavior (of `auto-complete.el`) with `company.el`.
 
 ----
 
-like `company-tng` but `company-preview-common-frontend` and
-`company-preview-frontend` are combined.
+Comparisons with `company-tng`:
+
+- `company-preview-` frontends are integrated to `company-dwim-frontend`
+- `company-selection-default` is not disabled
+  - `RET` can also perform completion
+  - first tooltip item looks like selected by default
 
 ## Usage
 
@@ -44,4 +48,5 @@ Load this package, bind `TAB` to `company-dwim`, and put
 ```
 
 When setting `company-frontends`, you also need to remove
-`company-preview-*-frontend`s to avoid confliction.
+`company-preview-*-frontend`s since they are integrated to
+`company-dwim-frontend`.
