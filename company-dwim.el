@@ -17,43 +17,42 @@
 
 ;; ---- the frontend
 
-(defun company-dwim-available-p ()
-  (and company-common
-       (or (eq (company-call-backend 'ignore-case) 'keep-prefix)
-           (string-prefix-p company-prefix company-common))))
-
 (defun company-dwim-expand-prefix-p ()
   (and company-common
        (or (eq (company-call-backend 'ignore-case) 'keep-prefix)
            (string-prefix-p company-prefix company-common))
        (not (string= company-prefix company-common))))
 
-(defun company-dwim-preview-show-at-point (pos completion &optional no-keep-cursor)
-  "Like `company-preview-show-at-point' but does not preserve
-cursor position when NO-KEEP-CURSOR is true."
-  (company-preview-show-at-point pos completion)
-  (when no-keep-cursor
-    (let* ((after-string (overlay-get company-preview-overlay 'after-string))
-           (display (overlay-get company-preview-overlay 'display))
-           (str (or after-string display)))
-      (unless (string= str "")
-        (remove-text-properties 0 1 '(cursor) str))
-      (overlay-put company-preview-overlay (if after-string 'after-string 'display) str))))
+(defvar company-dwim-overlay nil)
+
+(defun company-dwim-overlay-hide ()
+  (when company-dwim-overlay
+    (delete-overlay company-dwim-overlay)
+    (setq company-dwim-overlay nil)))
+
+(defun company-dwim-overlay-show-at-point (pos prefix completion)
+  (setq company-dwim-overlay (make-overlay (- (point) (length prefix)) (point)))
+  (overlay-put company-dwim-overlay 'display completion))
 
 (defun company-dwim-frontend (command)
   (cl-case command
     (pre-command
      (company-preview-hide)
+     (company-dwim-overlay-hide)
      (when (company-dwim-should-commit-p)
        (company-complete-selection)))
     (post-command
      (cond ((company-dwim-expand-prefix-p)
             (company-preview-show-at-point (point) company-common))
-           ((company-dwim-available-p)
-            (company-dwim-preview-show-at-point
-             (point) (nth company-selection company-candidates)
-             company-dwim-half-committed))))
-    (hide (company-preview-hide))))
+           (company-dwim-half-committed
+            (company-dwim-overlay-show-at-point
+             (point) company-prefix (nth company-selection company-candidates)))
+           (t
+            (company-preview-show-at-point
+             (point) (nth company-selection company-candidates)))))
+    (hide
+     (company-preview-hide)
+     (company-dwim-overlay-hide))))
 
 ;; ---- the command
 
@@ -62,8 +61,7 @@ cursor position when NO-KEEP-CURSOR is true."
   (cond ((company-dwim-expand-prefix-p)
          (company-complete-common)
          (setq company-dwim-half-committed nil))
-        ((and (not company-dwim-half-committed)
-              (company-dwim-available-p))
+        ((not company-dwim-half-committed)
          (setq company-dwim-half-committed t))
         (t
          (company-select-next arg))))

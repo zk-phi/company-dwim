@@ -12,7 +12,6 @@ Comparisons with `company-tng`:
 - `company-selection-default` is not disabled
   - `RET` can also perform completion
   - first tooltip item looks like selected by default
-- `company-dwim` is not enabled for flex matches
 
 ## Usage
 
