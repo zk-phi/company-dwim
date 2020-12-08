@@ -37,12 +37,12 @@
   "Like `company-preview-show-at-point' but does not preserve
 cursor position when NO-KEEP-CURSOR is true."
   (company-preview-show-at-point pos completion)
-  (when (and no-keep-cursor
-             (not (string= completion "")))
+  (when no-keep-cursor
     (let* ((after-string (overlay-get company-preview-overlay 'after-string))
            (display (overlay-get company-preview-overlay 'display))
            (str (or after-string display)))
-      (remove-text-properties 0 1 '(cursor) str)
+      (unless (string= str "")
+        (remove-text-properties 0 1 '(cursor) str))
       (overlay-put company-preview-overlay (if after-string 'after-string 'display) str))))
 
 (defun company-dwim-frontend (command)
