@@ -31,8 +31,15 @@
     (setq company-dwim-overlay nil)))
 
 (defun company-dwim-overlay-show-at-point (pos prefix completion)
-  (setq company-dwim-overlay (make-overlay (- (point) (length prefix)) (point)))
-  (overlay-put company-dwim-overlay 'display completion))
+  (let ((len (length prefix)))
+    (cond ((zerop len)
+           (setq company-dwim-overlay (make-overlay (- (point) 1) (point)))
+           (overlay-put company-dwim-overlay 'after-string
+                        (propertize completion 'face 'company-preview)))
+          (t
+           (setq company-dwim-overlay (make-overlay (- (point) len) (point)))
+           (overlay-put company-dwim-overlay 'display completion)
+           (overlay-put company-dwim-overlay 'face 'company-preview)))))
 
 (defun company-dwim-frontend (command)
   (cl-case command
