@@ -1,6 +1,17 @@
 (require 'company)
 (require 'cl-lib)
 
+(defgroup company-dwim nil
+  "Another tab-and-go implementation for company, like
+`ac-dwim'."
+  :group 'company-dwim)
+
+(defcustom company-dwim-trim-newline t
+  "When non-nil, preview only first like when completing
+  multi-line candidates."
+  :type 'boolean
+  :group 'company-dwim)
+
 ;; ---- state
 
 (defvar company-dwim-half-committed nil)
@@ -42,6 +53,10 @@
            (overlay-put company-dwim-overlay 'display completion)
            (overlay-put company-dwim-overlay 'face 'company-preview)))))
 
+(defun company-dwim-maybe-trim-newline (candidate)
+  (if (not company-dwim-trim-newline) candidate
+    (car (split-string candidate "\n" t))))
+
 (defun company-dwim-frontend (command)
   (cl-case command
     (pre-command
@@ -54,10 +69,12 @@
             (company-preview-show-at-point (point) company-common))
            (company-dwim-half-committed
             (company-dwim-overlay-show-at-point
-             (point) company-prefix (nth company-selection company-candidates)))
+             (point) company-prefix
+             (company-dwim-maybe-trim-newline (nth company-selection company-candidates))))
            (t
             (company-preview-show-at-point
-             (point) (nth company-selection company-candidates)))))
+             (point)
+             (company-dwim-maybe-trim-newline (nth company-selection company-candidates))))))
     (hide
      (company-preview-hide)
      (company-dwim-overlay-hide))))
