@@ -21,7 +21,8 @@
   (and company-common
        (or (eq (company-call-backend 'ignore-case) 'keep-prefix)
            (string-prefix-p company-prefix company-common))
-       (not (string= company-prefix company-common))))
+       (not (string= company-prefix company-common))
+       (not (company-require-match-p))))
 
 (defvar company-dwim-overlay nil)
 
