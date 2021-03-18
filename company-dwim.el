@@ -7,7 +7,7 @@
   :group 'company-dwim)
 
 (defcustom company-dwim-trim-newline t
-  "When non-nil, preview only first like when completing
+  "When non-nil, preview only first line when completing
   multi-line candidates."
   :type 'boolean
   :group 'company-dwim)
