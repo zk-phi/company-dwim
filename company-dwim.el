@@ -72,9 +72,10 @@
              (point) company-prefix
              (company-dwim-maybe-trim-newline (nth company-selection company-candidates))))
            (t
-            (company-preview-show-at-point
-             (point)
-             (company-dwim-maybe-trim-newline (nth company-selection company-candidates))))))
+            (let ((company-common (company-dwim-maybe-trim-newline company-common)))
+              (company-preview-show-at-point
+               (point)
+               (company-dwim-maybe-trim-newline (nth company-selection company-candidates)))))))
     (hide
      (company-preview-hide)
      (company-dwim-overlay-hide))))
